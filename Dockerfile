@@ -21,5 +21,9 @@ RUN apt install -y libgl1-mesa-glx ffmpeg unzip
 
 ADD https://huggingface.co/datasets/ij5/ace/resolve/main/assets.zip .
 
+RUN mkdir assets
+
+RUN unzip assets/assets.zip -d assets/
+
 CMD ["python3", "app.py"]
 
