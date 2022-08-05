@@ -1,31 +1,20 @@
-FROM nvidia/cuda:11.4.3-cudnn8-devel-ubuntu20.04
+FROM ubuntu:22.04
 
-# expose
-EXPOSE 8080
-
-# set working directory
 WORKDIR /app
 
-# install pip
-RUN apt-get update && apt-get install -y python3-pip
+RUN mkdir outputs
 
-# install git
-RUN apt-get install -y git
+COPY . .
 
-# update pip
-RUN pip3 install --upgrade pip
+RUN apt install -y python3 python3-pip python3-opencv
 
-# add requirements
-COPY ./requirements.txt /app/requirements.txt
-
-# install requirements
 RUN pip3 install -r requirements.txt
 
-# install jax[cuda]
-RUN pip3 install --upgrade "jax[cuda]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+RUN python3 -m spacy download ko_core_news_sm
 
-# add source code
-COPY . /app
+RUN apt install -y libgl1-mesa-glx ffmpeg unzip
 
-# run server
-CMD python3 app.py --port 8080 --model_version mega
+ADD https://huggingface.co/datasets/ij5/ace/resolve/main/assets.zip .
+
+CMD ["python3", "app.py"]
+
